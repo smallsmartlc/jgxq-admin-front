@@ -26,12 +26,7 @@
       </el-table-column>
       <el-table-column label="角色" width="110" align="center">
         <template slot-scope="scope">
-          {{ scope.row.roleName }}
-        </template>
-      </el-table-column>
-      <el-table-column class-name="status-col" label="Status" width="110" align="center">
-        <template slot-scope="scope">
-          <el-tag :type="scope.row.status | statusFilter">{{ scope.row.status }}</el-tag>
+          {{ scope.row.role.name }}
         </template>
       </el-table-column>
       <el-table-column align="center" prop="created_at" label="Display_time" width="200">
@@ -65,7 +60,7 @@
         <el-button type="primary" @click="addAdmin">确 定</el-button>
       </div>
     </el-dialog>
-        <el-dialog title="添加管理员账户" :visible.sync="editDialog">
+    <el-dialog title="编辑管理员信息" :visible.sync="editDialog">
       <el-form :rules="rules" ref="addForm" :model="adminEditReq">
         <el-form-item label="昵称" prop="nickName">
           <el-input v-model="adminEditReq.nickName" autocomplete="off"></el-input>
@@ -73,7 +68,8 @@
         <el-form-item label="账户名" prop="adminName">
           <el-input v-model="adminEditReq.adminName" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="分配角色" prop="roleId">
+        <el-form-item label="修改角色" prop="roleId">
+          <!-- <el-select v-model="editRoleId" prop="roleId" placeholder="请选择角色"> -->
           <el-select v-model="adminEditReq.roleId" prop="roleId" placeholder="请选择角色">
             <el-option v-for="item in roles" :key="item.id" :label="item.name" :value="item.id"></el-option>
           </el-select>
@@ -82,7 +78,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="editDialog = false">取 消</el-button>
-        <el-button type="primary" @click="editAdmin(adminKey)">确 定</el-button>
+        <el-button type="primary" @click="editAdmin">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -91,7 +87,7 @@
 <script>
 import { pageAdmin } from '@/api/admin'
 import { listBasicRole } from '@/api/role'
-import { adminReg ,  } from '@/api/user'
+import { adminReg , updateAdmin } from '@/api/user'
 import {validateAdmin,validatePass} from "@/utils/validateInput"
 export default {
   filters: {
@@ -128,7 +124,7 @@ export default {
       roles : [],
     }
   },
-  created() {
+  mounted() {
     this.fetchData();
     this.listRole();
   },
@@ -190,7 +186,14 @@ export default {
       }).catch();
     },
     openEdit(item){
-      this.adminEditReq = item;
+      const {adminKey,adminName,nickName} = item
+      this.adminEditReq = {
+        adminKey,
+        adminName,
+        nickName,
+        roleId : item.role.id,
+      };
+      // this.editRoleId = item.role.id;
       this.editDialog = true;
     },
     addAdmin(){
@@ -202,8 +205,14 @@ export default {
       })
     },
     editAdmin(){
-
-    }
+      updateAdmin(this.adminEditReq).then((res)=>{
+        if(res.code == 200){
+          this.$message.success('修改成功!');
+          this.fetchData();
+          this.editDialog = false;
+        }
+      })
+    },
   }
 }
 </script>

@@ -31,5 +31,9 @@ export function adminReg(data){
 }
 
 export function updateAdmin(data) {
-  
+  return request({
+    url : `/admin/${data.adminKey}`,
+    method : 'put',
+    data,
+  })
 }
