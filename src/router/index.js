@@ -49,7 +49,7 @@ export const constantRoutes = [
     redirect: '/home',
     children: [{
       path: 'home',
-      name: 'Dashboard',
+      name: '控制台',
       component: () => import('@/views/dashboard/index'),
       meta: { title: '控制台', icon: 'dashboard' }
     }]
@@ -80,77 +80,50 @@ export const constantRoutes = [
   },
 
   {
-    path: '/form',
+    path: '/user',
     component: Layout,
     children: [
       {
-        path: 'index',
+        path: '/user',
         name: 'Form',
-        component: () => import('@/views/form/index'),
-        meta: { title: 'Form', icon: 'form' }
+        component: () => import('@/views/user/index'),
+        meta: { title: '用户管理', icon: 'table' }
       }
     ]
   },
 
   {
-    path: '/nested',
+    path: '/team',
     component: Layout,
-    redirect: '/nested/menu1',
-    name: 'Nested',
+    name: 'team',
     meta: {
-      title: 'Nested',
+      title: '球队管理',
       icon: 'nested'
     },
     children: [
       {
-        path: 'menu1',
-        component: () => import('@/views/nested/menu1/index'), // Parent router-view
-        name: 'Menu1',
-        meta: { title: 'Menu1' },
-        children: [
-          {
-            path: 'menu1-1',
-            component: () => import('@/views/nested/menu1/menu1-1'),
-            name: 'Menu1-1',
-            meta: { title: 'Menu1-1' }
-          },
-          {
-            path: 'menu1-2',
-            component: () => import('@/views/nested/menu1/menu1-2'),
-            name: 'Menu1-2',
-            meta: { title: 'Menu1-2' },
-            children: [
-              {
-                path: 'menu1-2-1',
-                component: () => import('@/views/nested/menu1/menu1-2/menu1-2-1'),
-                name: 'Menu1-2-1',
-                meta: { title: 'Menu1-2-1' }
-              },
-              {
-                path: 'menu1-2-2',
-                component: () => import('@/views/nested/menu1/menu1-2/menu1-2-2'),
-                name: 'Menu1-2-2',
-                meta: { title: 'Menu1-2-2' }
-              }
-            ]
-          },
-          {
-            path: 'menu1-3',
-            component: () => import('@/views/nested/menu1/menu1-3'),
-            name: 'Menu1-3',
-            meta: { title: 'Menu1-3' }
-          }
-        ]
+        hidden : true,
+        path: '',
+        name: 'list',
+        meta: { title: '球队列表' },
+        component: () => import('@/views/team/index'),
       },
       {
-        path: 'menu2',
-        component: () => import('@/views/nested/menu2/index'),
-        name: 'Menu2',
-        meta: { title: 'menu2' }
-      }
+        hidden : true,
+        path: 'add',
+        name: 'add',
+        meta: { title: '添加球队' },
+        component: () => import('@/views/team/add'),
+      },
+      {
+        hidden : true,
+        path: ':id',
+        name: 'edit',
+        meta: { title: '编辑球队' },
+        component: () => import('@/views/team/edit'),
+      },
     ]
   },
-
   {
     path: 'external-link',
     component: Layout,

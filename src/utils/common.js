@@ -10,7 +10,7 @@ export function isEmpty(str){
 export function url2img(str){
     if(str){return imgUrl + str;}
     else{
-        var defaultimg = require('../assets/default_image.png')
+        var defaultimg = require('@/assets/default_image.png')
         return defaultimg; 
     } 
 }

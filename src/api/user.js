@@ -22,18 +22,23 @@ export function logout() {
   })
 }
 
-export function adminReg(data){
+export function pageUser(cur,size,params){
   return request({
-    url : '/admin',
-    method : 'post',
-    data,
+    url : `user/page/${cur}/${size}`,
+    method : 'get',
+    params
   })
 }
-
-export function updateAdmin(data) {
+export function updateUser(userkey,data){
   return request({
-    url : `/admin/${data.adminKey}`,
+    url : `user/${userkey}`,
     method : 'put',
-    data,
-  })
+    data
+  }) 
+}
+export function resetPassword(userkey) {
+  return request({
+    url : `user/resetPwd/${userkey}`,
+    method : 'put',
+  }) 
 }

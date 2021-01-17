@@ -87,10 +87,6 @@ export const validateVerCode = (rule, value, callback) => {
 }
 // 确认密码验证
 export const validatePassConfirm = (rule, value, callback) => {
-    console.log(rule);
-    console.log(value);
-    console.log(callback);
-    console.log(target);
     if (value === '') {
         callback(new Error('请再次输入密码'));
     } else {
@@ -107,3 +103,13 @@ export const validateAgree = (rule, value, callback) => {
     }
 };
 
+// 数组长度校验
+export const validateArray = (rule, value, callback) => {
+    if (!value) {
+        callback(new Error('至少有一个权限!'));
+    } else if (value.length < 0){
+        callback (new Error('至少有一个权限!'))
+    }else {
+        callback();
+    }
+};

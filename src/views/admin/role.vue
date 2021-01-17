@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <div style="margin-bottom:10px"><el-button type="primary" @click="addDialog = true" icon="el-icon-plus">添加管理员</el-button></div>
+    <div style="margin-bottom:10px"><el-button type="primary" @click="addDialog = true" icon="el-icon-plus">添加角色</el-button></div>
     <el-table
       v-loading="listLoading"
       :data="list"
@@ -9,60 +9,53 @@
       fit
       highlight-current-row
     >
-      <el-table-column align="center" label="adminKey" width="95">
+      <el-table-column align="center" label="id" width="95">
         <template slot-scope="scope">
-          {{ scope.row.adminKey }}
+          {{ scope.row.id }}
         </template>
       </el-table-column>
-      <el-table-column label="昵称">
+      <el-table-column label="角色名">
         <template slot-scope="scope">
-          {{ scope.row.nickName }}
+          {{ scope.row.name }}
         </template>
       </el-table-column>
-      <el-table-column label="账户名" width="110" align="center">
+      <el-table-column label="权限" width="110" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.adminName }}</span>
+          <el-link style="margin:5px" type="primary" @click="openEdit(scope.row.id)" :underline="false">配置权限</el-link>
         </template>
       </el-table-column>
-      <el-table-column label="角色" width="110" align="center">
+      <el-table-column align="center" label="删除" width="100">
         <template slot-scope="scope">
-          {{ scope.row.roleName }}
-        </template>
-      </el-table-column>
-      <el-table-column class-name="status-col" label="Status" width="110" align="center">
-        <template slot-scope="scope">
-          <el-tag :type="scope.row.status | statusFilter">{{ scope.row.status }}</el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" prop="created_at" label="Display_time" width="200">
-        <template slot-scope="scope">
-          <el-link style="margin:5px" type="primary" :underline="false">修改</el-link>
-          <el-link style="margin:5px" type="primary" @click="openDelete(scope.row)" :underline="false">删除</el-link>
-          <el-link style="margin:5px" type="primary" @click="openPassword(scope.row)" :underline="false">重置密码</el-link>
+          <el-link style="margin:5px" type="primary" @click="openDelete(scope.row.id)" :underline="false">删除</el-link>
         </template>
       </el-table-column>
     </el-table>
-    <el-dialog title="收货地址" :visible.sync="addDialog">
-      <el-form :model="adminAddReq">
-        <el-form-item label="昵称">
-          <el-input v-model="adminAddReq.nickName" autocomplete="off"></el-input>
+    <el-dialog title="添加角色" :visible.sync="addDialog">
+      <el-form :rules="rules" ref="addForm" :model="roleAddReq">
+        <el-form-item label="角色名" prop="name">
+          <el-input v-model="roleAddReq.name" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="账户名">
-          <el-input v-model="adminAddReq.adminName" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="密码">
-          <el-input v-model="adminAddReq.password" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="分配角色">
-          <el-select v-model="adminAddReq.roleId" placeholder="请选择角色">
-            <el-option v-for="item in roles" :key="item.id" :label="item.name" :value="item.name"></el-option>
-            
-          </el-select>
+        <el-form-item label="权限">
+          <el-transfer v-model="roleAddReq.permissions" :data="permissionData"></el-transfer>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="addDialog = false">取 消</el-button>
-        <el-button type="primary" @click="addDialog = false">确 定</el-button>
+        <el-button type="primary" @click="addRole">确 定</el-button>
+      </div>
+    </el-dialog>
+    <el-dialog title="修改角色" :visible.sync="editDialog">
+      <el-form :rules="rules" ref="editForm" :model="roleEditReq">
+        <el-form-item label="角色名" prop="name">
+          <el-input v-model="roleEditReq.name" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="权限">
+          <el-transfer v-model="roleEditReq.permissions" :data="permissionData"></el-transfer>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="editDialog = false">取 消</el-button>
+        <el-button type="primary" @click="editRole">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -70,7 +63,8 @@
 
 <script>
 import { pageAdmin } from '@/api/admin'
-import { listBasicRole } from '@/api/role'
+import { listBasicRole,getRoleById,listPermissions,addRole,editRole,deleteRole } from '@/api/role'
+import {validateArray} from "@/utils/validateInput"
 export default {
   filters: {
     statusFilter(status) {
@@ -85,81 +79,115 @@ export default {
   data() {
     return {
       list: null,
+      permissions : [],
       listLoading: true,
       cur : 1,
       size : 10,
       total : 0,
       addDialog : false,
-      adminAddReq:{
-        nickName : "",
-        adminName : "",
-        password : "",
-        roleId : "",
+      editDialog : false,
+      roleAddReq:{
+        name : "",
+        permissions : [], 
       },
+      roleEditReq:{},
       roles : [],
+      rules: {
+        name : [{ required: true, message: '角色名不能为空', trigger: 'change' }]
+      },
     }
   },
   created() {
     this.fetchData();
-    this.listRole();
+    this.listPermissions();
   },
   methods: {
+    listPermissions(){
+      listPermissions().then((res)=>{
+        this.permissions = res.data
+      })
+    },
     fetchData() {
       this.listLoading = true
-      pageAdmin(this.cur,this.size).then(res => {
-        this.list = res.data.records
-        this.total = res.data.total; 
+      listBasicRole().then(res => {
+        this.list = res.data 
         this.listLoading = false
-      })
+      }).catch(()=>{this.listLoading = false})
     },
-    listRole(){
-      listBasicRole().then((res)=>{
-        this.roles = res.data;
-      })
-    },
-    openPassword(item){
-      this.$prompt('请输入新密码', '重置密码', {
-          confirmButtonText: '重置',
-          cancelButtonText: '取消',
-          inputValidator: (value)=>{
-            if (value === '') {
-                return ('请输入密码');
-            } else {
-                const reg = /^(?![A-Za-z]+$)(?!\d+$)(?![\W_]+$)(?![\u4e00-\u9fa5]+)\S+$/;
-                const len = value.split('').length
-                if (len < 6 || len > 15) {
-                    return '密码长度在 6 到 15 个字符';
-                } else if (!(reg.test(value))) {
-                    return '密码包含字母、数字和标点符号中至少2种';
-                } else {
-                    return true;
-                }
+    addRole(){
+      this.$refs['addForm'].validate((valid) => {
+        if (valid) {
+          addRole(this.roleAddReq).then((res)=>{
+            if(res.code == 200){
+              this.list.push({
+                id : res.data,
+                name : this.roleAddReq.name
+              })
+              this.roleAddReq = {
+                name : "",
+                permissions : [], 
+              },
+              this.addDialog = false
             }
-          },
-        }).then(({ value }) => {
-          this.$message({
-            type: 'success',
-            message: '你的邮箱是: ' + value
-          });
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '取消输入'
-          });       
-        });
+          })
+        }
+      })
     },
-    openDelete(item) {
-      this.$confirm('此操作将注销该用户, 是否继续?', '提示', {
+    openEdit(id){
+      getRoleById(id).then((res)=>{
+        if(res.code == 200){
+          this.roleEditReq = res.data;
+           this.editDialog = true;
+        }
+      })
+    },
+    editRole(){
+      this.$refs['editForm'].validate((valid) => {
+        if (valid) {
+          editRole(this.roleEditReq).then((res)=>{
+            if(res.code == 200){
+              if(res.data){
+                this.$message.success("修改成功!");
+                this.fetchData();
+                this.editDialog = false;
+              }else{
+                this.$message.warning("修改失败");
+              }
+            }
+          })
+        }
+      })
+    },
+    openDelete(id) {
+      this.$confirm('此操作将删除该角色, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.$message({
-          type: 'success',
-          message: '删除成功!'
-        });
+        deleteRole(id).then((res)=>{
+          if(res.code == 200){
+            if(res.data){
+              this.fetchData();
+              this.$message.success('删除成功!');
+            }else{
+              this.$message.error('删除失败!');
+            }
+          }
+        })
       }).catch();
     },
+  },
+  computed : {
+    permissionData(){
+      const data = [];
+      for (let i = 0; i < this.permissions.length; i++) {
+        data.push({
+          key: this.permissions[i].code,
+          label: this.permissions[i].name
+        });
+      }
+      return data;
+    }
   }
 }
 </script>

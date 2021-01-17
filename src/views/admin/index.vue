@@ -37,6 +37,9 @@
         </template>
       </el-table-column>
     </el-table>
+    <div class="block" style="display:flex;flex-direction:row-reverse;">
+      <el-pagination layout="prev, pager, next" :current-page="cur" @current-change="changePage" :page-size="size" :total="total"/>
+    </div>
     <el-dialog title="添加管理员账户" :visible.sync="addDialog">
       <el-form :rules="rules" ref="addForm" :model="adminAddReq">
         <el-form-item label="昵称" prop="nickName">
@@ -61,7 +64,7 @@
       </div>
     </el-dialog>
     <el-dialog title="编辑管理员信息" :visible.sync="editDialog">
-      <el-form :rules="rules" ref="addForm" :model="adminEditReq">
+      <el-form :rules="rules" ref="editForm" :model="adminEditReq">
         <el-form-item label="昵称" prop="nickName">
           <el-input v-model="adminEditReq.nickName" autocomplete="off"></el-input>
         </el-form-item>
@@ -85,9 +88,8 @@
 </template>
 
 <script>
-import { pageAdmin } from '@/api/admin'
+import { pageAdmin,adminReg , updateAdmin,deleteAdmin,resetPassword} from '@/api/admin'
 import { listBasicRole } from '@/api/role'
-import { adminReg , updateAdmin } from '@/api/user'
 import {validateAdmin,validatePass} from "@/utils/validateInput"
 export default {
   filters: {
@@ -135,7 +137,7 @@ export default {
         this.list = res.data.records
         this.total = res.data.total; 
         this.listLoading = false
-      })
+      }).catch(()=>{this.listLoading = false})
     },
     listRole(){
       listBasicRole().then((res)=>{
@@ -147,7 +149,7 @@ export default {
           confirmButtonText: '重置',
           cancelButtonText: '取消',
           inputValidator: (value)=>{
-            if (value === '') {
+            if (!value) {
                 return ('请输入密码');
             } else {
                 const reg = /^(?![A-Za-z]+$)(?!\d+$)(?![\W_]+$)(?![\u4e00-\u9fa5]+)\S+$/;
@@ -162,16 +164,12 @@ export default {
             }
           },
         }).then(({ value }) => {
-          this.$message({
-            type: 'success',
-            message: '你的邮箱是: ' + value
-          });
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '取消输入'
-          });       
-        });
+          resetPassword(item.adminKey,value).then((res)=>{
+            if(res.code == 200){
+              this.$message.success("重置密码成功!")
+            }
+          })
+        }).catch();
     },
     openDelete(item) {
       this.$confirm('此操作将注销该用户, 是否继续?', '提示', {
@@ -179,10 +177,18 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.$message({
-          type: 'success',
-          message: '删除成功!'
-        });
+        deleteAdmin(item.adminKey).then((res)=>{
+          if(res.code == 200){
+            if(res.data){
+              this.fetchData();
+              this.$message.success('删除成功!');
+            }else{
+              this.$message.error('删除失败!');
+            }
+          }
+        })
+
+        
       }).catch();
     },
     openEdit(item){
@@ -197,22 +203,40 @@ export default {
       this.editDialog = true;
     },
     addAdmin(){
-      adminReg(this.adminAddReq).then((res)=>{
-        if(res.code == 200){
-          this.$message.success('添加成功!');
-          this.addDialog = false
+      this.$refs['addForm'].validate((valid) => {
+        if (valid) {
+          adminReg(this.adminAddReq).then((res)=>{
+            if(res.code == 200){
+              this.$message.success('添加成功!');
+              this.fetchData();
+              this.addDialog = false;
+              this.adminAddReq = {
+                nickName : "",
+                adminName : "",
+                roleId : "",
+              }
+            }
+          })
         }
       })
     },
     editAdmin(){
-      updateAdmin(this.adminEditReq).then((res)=>{
-        if(res.code == 200){
-          this.$message.success('修改成功!');
-          this.fetchData();
-          this.editDialog = false;
+      this.$refs['editForm'].validate((valid) => {
+        if (valid) {
+          updateAdmin(this.adminEditReq).then((res)=>{
+            if(res.code == 200){
+              this.$message.success('修改成功!');
+              this.fetchData();
+              this.editDialog = false;
+            }
+          })
         }
       })
     },
+    changePage(val){
+      this.cur = val;
+      this.fetchData();
+    }
   }
 }
 </script>
