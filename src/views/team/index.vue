@@ -25,7 +25,7 @@
       </el-table-column>
       <el-table-column class-name="status-col" label="球员" width="110" align="center">
         <template slot-scope="scope">
-          <el-link type="primary" :underline="false">查看球员</el-link>
+          <router-link :to="`/team/player/${scope.row.id}`"><el-link type="primary" :underline="false">查看球员</el-link></router-link>
         </template>
       </el-table-column>
       <el-table-column class-name="status-col" label="球队信息" width="110" align="center">
@@ -77,7 +77,6 @@ export default {
       this.listLoading = true
       PageTeams(this.cur,this.size).then(res => {
         if(res.code == 200){
-          console.log(res); 
           this.list = res.data.data;
           this.total = res.data.total;
           this.listLoading = false

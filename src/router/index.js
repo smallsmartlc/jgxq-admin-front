@@ -122,6 +122,45 @@ export const constantRoutes = [
         meta: { title: '编辑球队' },
         component: () => import('@/views/team/edit'),
       },
+      {
+        hidden : true,
+        path: 'player/:id',
+        name: 'player',
+        meta: { title: '队员' },
+        component: () => import('@/views/team/player'),
+      },
+    ]
+  },
+  {
+    path: '/player',
+    component: Layout,
+    name: 'player',
+    meta: {
+      title: '球员管理',
+      icon: 'nested'
+    },
+    children: [
+      {
+        hidden : true,
+        path: '',
+        name: 'list',
+        meta: { title: '球员列表' },
+        component: () => import('@/views/player/index'),
+      },
+      {
+        hidden : true,
+        path: 'add',
+        name: 'add',
+        meta: { title: '添加球员' },
+        component: () => import('@/views/player/index'),
+      },
+      {
+        hidden : true,
+        path: ':id',
+        name: 'edit',
+        meta: { title: '编辑球员' },
+        component: () => import('@/views/player/index'),
+      },
     ]
   },
   {

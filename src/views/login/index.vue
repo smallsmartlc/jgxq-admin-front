@@ -43,11 +43,6 @@
 
       <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">Login</el-button>
 
-      <div class="tips">
-        <span style="margin-right:20px;">username: admin</span>
-        <span> password: any</span>
-      </div>
-
     </el-form>
   </div>
 </template>
@@ -62,7 +57,7 @@ export default {
     return {
       loginForm: {
         adminName: 'admin',
-        password: '111111'
+        password: 'abc123'
       },
       loginRules: {
         adminName: [{ required: true, trigger: 'blur', validator: validateAdmin }],
@@ -182,18 +177,6 @@ $light_gray:#eee;
     padding: 160px 35px 0;
     margin: 0 auto;
     overflow: hidden;
-  }
-
-  .tips {
-    font-size: 14px;
-    color: #fff;
-    margin-bottom: 10px;
-
-    span {
-      &:first-of-type {
-        margin-right: 16px;
-      }
-    }
   }
 
   .svg-container {
