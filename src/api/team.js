@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-export function PageTeams(cur,size,data) {
+export function pageTeams(cur,size,data) {
   return request({
     url: `team/page/${cur}/${size}`,
     method: 'get',
@@ -11,6 +11,12 @@ export function getTeam(id) {
   return request({
     url:`team/infos/${id}`,
     method : 'get',
+  })
+}
+export function deleteTeam(id) {
+  return request({
+    url:`team/${id}`,
+    method : 'delete',
   })
 }
 export function updateTeam(id,data) {

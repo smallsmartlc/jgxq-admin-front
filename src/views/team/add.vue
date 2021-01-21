@@ -101,12 +101,7 @@ export default {
               value : null,
             },
           ],
-          champions : [
-            {
-              name : "",
-              time : [],
-            }
-          ]
+          champions : []
         }
       },
       formLoading: true,

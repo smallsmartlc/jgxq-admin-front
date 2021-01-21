@@ -95,7 +95,6 @@ export const constantRoutes = [
   {
     path: '/team',
     component: Layout,
-    name: 'team',
     meta: {
       title: '球队管理',
       icon: 'nested'
@@ -104,28 +103,28 @@ export const constantRoutes = [
       {
         hidden : true,
         path: '',
-        name: 'list',
+        name: 'teamList',
         meta: { title: '球队列表' },
         component: () => import('@/views/team/index'),
       },
       {
         hidden : true,
         path: 'add',
-        name: 'add',
-        meta: { title: '添加球队' },
+        name: 'addTeam',
+        meta: { title: '添加' },
         component: () => import('@/views/team/add'),
       },
       {
         hidden : true,
         path: ':id',
-        name: 'edit',
-        meta: { title: '编辑球队' },
+        name: 'editTeam',
+        meta: { title: '编辑' },
         component: () => import('@/views/team/edit'),
       },
       {
         hidden : true,
         path: 'player/:id',
-        name: 'player',
+        name: 'teamPlayer',
         meta: { title: '队员' },
         component: () => import('@/views/team/player'),
       },
@@ -134,7 +133,6 @@ export const constantRoutes = [
   {
     path: '/player',
     component: Layout,
-    name: 'player',
     meta: {
       title: '球员管理',
       icon: 'nested'
@@ -143,23 +141,30 @@ export const constantRoutes = [
       {
         hidden : true,
         path: '',
-        name: 'list',
+        name: 'playerList',
         meta: { title: '球员列表' },
         component: () => import('@/views/player/index'),
       },
       {
         hidden : true,
         path: 'add',
-        name: 'add',
-        meta: { title: '添加球员' },
-        component: () => import('@/views/player/index'),
+        name: 'addPlayer',
+        meta: { title: '添加' },
+        component: () => import('@/views/player/add'),
+      },
+      {
+        hidden : true,
+        path: 'transfer',
+        name: 'transfer',
+        meta: { title: '转会' },
+        component: () => import('@/views/player/transfer'),
       },
       {
         hidden : true,
         path: ':id',
-        name: 'edit',
-        meta: { title: '编辑球员' },
-        component: () => import('@/views/player/index'),
+        name: 'editPlayer',
+        meta: { title: '编辑' },
+        component: () => import('@/views/player/edit'),
       },
     ]
   },

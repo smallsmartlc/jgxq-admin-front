@@ -187,8 +187,6 @@ export default {
             }
           }
         })
-
-        
       }).catch();
     },
     openEdit(item){

@@ -30,10 +30,11 @@
       </el-table-column>
       <el-table-column class-name="status-col" label="球队信息" width="110" align="center">
         <template slot-scope="scope">
-          <router-link :to="`/team/${scope.row.id}`"><el-link type="primary" :underline="false">编辑</el-link></router-link>
+          <router-link :to="`/team/${scope.row.id}`"><el-link style="margin-right:10px" type="primary" :underline="false">编辑</el-link></router-link>
+          <el-link type="primary" @click="openDelete(scope.row)" :underline="false">删除</el-link>
         </template>
       </el-table-column>
-      <el-table-column align="center" prop="created_at" label="Display_time" width="200">
+      <el-table-column align="center" prop="created_at" label="创建时间" width="200">
         <template slot-scope="scope">
           <i class="el-icon-time" />
           <span>{{ $moment(scope.row.createAt).format('YYYY-MM-DD HH:mm:ss') }}</span>
@@ -47,7 +48,7 @@
 </template>
 
 <script>
-import { PageTeams } from '@/api/team'
+import { pageTeams,deleteTeam} from '@/api/team'
 
 export default {
   filters: {
@@ -75,7 +76,7 @@ export default {
   methods: {
     fetchData() {
       this.listLoading = true
-      PageTeams(this.cur,this.size).then(res => {
+      pageTeams(this.cur,this.size).then(res => {
         if(res.code == 200){
           this.list = res.data.data;
           this.total = res.data.total;
@@ -86,6 +87,24 @@ export default {
     changePage(val){
       this.cur = val;
       this.fetchData();
+    },
+    openDelete(item) {
+      this.$confirm('此操作将删除该球队, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        deleteTeam(item.id).then((res)=>{
+          if(res.code == 200){
+            if(res.data){
+              this.fetchData();
+              this.$message.success('删除成功!');
+            }else{
+              this.$message.error('删除失败!');
+            }
+          }
+        })
+      }).catch();
     }
   }
 }
