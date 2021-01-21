@@ -169,13 +169,26 @@ export const constantRoutes = [
     ]
   },
   {
-    path: 'external-link',
+    path: '/news',
     component: Layout,
+    meta: {
+      title: '新闻管理',
+      icon: 'el-icon-help'
+    },
     children: [
       {
-        path: 'https://panjiachen.github.io/vue-element-admin-site/#/',
-        meta: { title: 'External Link', icon: 'link' }
-      }
+        hidden : true,
+        path: '',
+        meta: { title: '新闻列表'},
+        component: () => import('@/views/news/index'),
+      },
+      {
+        hidden : true,
+        path: ':id',
+        name: 'editNews',
+        meta: { title: '编辑' },
+        component: () => import('@/views/news/edit'),
+      },
     ]
   },
 
