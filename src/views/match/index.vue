@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <div style="margin-bottom:10px"><router-link to="/player/add"><el-button type="primary" icon="el-icon-plus">添加球员</el-button></router-link></div>
+    <div style="margin-bottom:10px"><router-link to="/match/add"><el-button type="primary" icon="el-icon-plus">添加比赛</el-button></router-link></div>
     <el-table
       v-loading="listLoading"
       :data="list"
@@ -13,45 +13,48 @@
           {{ scope.row.id }}
         </template>
       </el-table-column>
-      <el-table-column label="姓名" width="110">
+      <el-table-column label="标题">
         <template slot-scope="scope">
-          {{ scope.row.name }}
+          {{ scope.row.title }}
         </template>
       </el-table-column>
-      <el-table-column label="国籍">
+      <el-table-column label="主队" width="110px">
         <template slot-scope="scope">
-          {{ scope.row.nation }}
-        </template>
-      </el-table-column>
-      <el-table-column label="年龄">
-        <template slot-scope="scope">
-          {{ scope.row.age }}
-        </template>
-      </el-table-column>
-      <el-table-column label="位置">
-        <template slot-scope="scope">
-          {{ scope.row.position }}
-        </template>
-      </el-table-column>
-      <el-table-column label="球队">
-        <template slot-scope="scope">
-          <div v-if="scope.row.team">
-            <el-image style="width: 80px; height: 80px" :src="$utils.url2img(scope.row.team.logo)" fit="contain"></el-image>
-            <div>{{scope.row.team.name}}<el-link type="primary" :underline="false">转会</el-link></div>
+          <div v-if="scope.row.homeTeam">
+            <div><el-image style="width: 80px; height: 80px" :src="$utils.url2img(scope.row.homeTeam.logo)" fit="contain"></el-image></div>
+            <div>{{scope.row.homeTeam.name}}</div>
           </div>
-          <div v-else>自由球员<router-link to="/player/transfer"><el-link type="primary" :underline="false">设置</el-link></router-link></div>
         </template>
       </el-table-column>
-      <el-table-column class-name="status-col" label="球队信息" width="110" align="center">
+      <el-table-column label="客队" width="110px">
         <template slot-scope="scope">
-          <router-link :to="`/player/${scope.row.id}`"><el-link style="margin-right:10px" type="primary" :underline="false">编辑</el-link></router-link>
+          <div v-if="scope.row.visitingTeam">
+            <div><el-image style="width: 80px; height: 80px" :src="$utils.url2img(scope.row.visitingTeam.logo)" fit="contain"></el-image></div>
+            <div>{{scope.row.visitingTeam.name}}</div>
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column label="比分">
+        <template slot-scope="scope">
+          <div v-if='dateDiff(scope.row.startTime)>0'>{{scope.row.homeScore}}-{{scope.row.visitingScore}}</div>
+          <div v-else>未开始</div>
+        </template>
+      </el-table-column>
+      <el-table-column label="视频" width="80">
+        <template slot-scope="scope">
+          <el-link type="primary" :href="scope.row.link" :underline="false">视频地址</el-link>
+        </template>
+      </el-table-column>
+      <el-table-column class-name="status-col" label="球队信息" align="center">
+        <template slot-scope="scope">
+          <router-link :to="`/match/${scope.row.id}`"><el-link style="margin-right:10px" type="primary" :underline="false">编辑</el-link></router-link>
           <el-link type="primary" @click="openDelete(scope.row)" :underline="false">删除</el-link>
         </template>
       </el-table-column>
-      <el-table-column align="center" prop="created_at" label="创建时间" width="200">
+      <el-table-column align="center" prop="created_at" label="比赛时间" width="200">
         <template slot-scope="scope">
           <i class="el-icon-time" />
-          <span>{{ $moment(scope.row.createTime).format('YYYY-MM-DD HH:mm:ss') }}</span>
+          <span>{{ $moment(scope.row.startTime).format('YYYY-MM-DD HH:mm:ss') }}</span>
         </template>
       </el-table-column>
     </el-table>
@@ -62,7 +65,7 @@
 </template>
 
 <script>
-import { pagePlayer,deletePlayer } from '@/api/player'
+import { pageMatches,deleteMatchById} from '@/api/match'
 
 export default {
   filters: {
@@ -90,7 +93,7 @@ export default {
   methods: {
     fetchData() {
       this.listLoading = true
-      pagePlayer(this.cur,this.size).then(res => {
+      pageMatches(this.cur,this.size).then(res => {
         if(res.code == 200){
           this.list = res.data.records;
           this.total = res.data.total;
@@ -103,12 +106,12 @@ export default {
       this.fetchData();
     },
     openDelete(item) {
-      this.$confirm('此操作将删除该球员, 是否继续?', '提示', {
+      this.$confirm('此操作将删除该比赛的所有信息, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        deletePlayer(item.id).then((res)=>{
+        deleteMatchById(item.id).then((res)=>{
           if(res.code == 200){
             if(res.data){
               this.fetchData();
@@ -119,6 +122,14 @@ export default {
           }
         })
       }).catch();
+    }
+  },
+  computed : {
+    dateDiff(){
+        return function(timeStr){
+            var time = new Date(timeStr)
+            return new Date()-time; 
+        }
     },
   }
 }

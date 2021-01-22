@@ -28,10 +28,10 @@
       <el-form-item label="球队">
         <div v-if="playerReq.team">
           <el-image style="width: 80px; height: 80px" :src="$utils.url2img(team.logo)" fit="contain"></el-image>
-          <div>{{team.name}}</div>
+          <div>{{team.name}}<el-link type="primary" @click="removeTeam" :underline="false">取消选择</el-link></div>
         </div>
         <div v-else>未设置球队</div>
-        <el-link type="primary" @click="teamDialog = true" :underline="false">选择球队</el-link>
+        <div><el-link type="primary" @click="teamDialog = true" :underline="false">选择球队</el-link></div>
       </el-form-item>
       <el-form-item label="惯用脚" prop="strongFoot">
           <el-select v-model="playerReq.strongFoot" placeholder="请选择">
@@ -177,6 +177,10 @@ export default {
     routeBack(){
       this.$router.go(-1);
     },
+    removeTeam(){
+      this.team = null;
+      this.playerReq.team = null;
+    }
   }
 }
 </script>

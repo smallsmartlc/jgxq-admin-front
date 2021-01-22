@@ -12,23 +12,22 @@
           {{ scope.row.id }}
         </template>
       </el-table-column>
-      <el-table-column label="作者" width="100px">
+      <el-table-column label="用户" width="100px">
         <template slot-scope="scope">
           {{ scope.row.author }}
         </template>
       </el-table-column>
-      <el-table-column label="标题">
+      <el-table-column label="内容">
         <template slot-scope="scope">
-          <el-link type="primary" :underline="false">{{ scope.row.title }}</el-link>
+          {{ scope.row.text }}
         </template>
       </el-table-column>
-      <el-table-column class-name="status-col" label="球队信息" width="110" align="center">
+      <el-table-column class-name="status-col" label="球队信息" width="80" align="center">
         <template slot-scope="scope">
-          <router-link :to="`/news/${scope.row.id}`"><el-link style="margin-right:10px" type="primary" :underline="false">编辑</el-link></router-link>
           <el-link type="primary" @click="openDelete(scope.row)" :underline="false">删除</el-link>
         </template>
       </el-table-column>
-      <el-table-column align="center" prop="created_at" label="创建时间" width="200">
+      <el-table-column align="center" prop="created_at" label="发布时间" width="200">
         <template slot-scope="scope">
           <i class="el-icon-time" />
           <span>{{ $moment(scope.row.createAt).format('YYYY-MM-DD HH:mm:ss') }}</span>
@@ -42,7 +41,7 @@
 </template>
 
 <script>
-import { pageNews,deleteNews} from '@/api/news'
+import { pageTalk,deleteTalk} from '@/api/talk'
 
 export default {
   filters: {
@@ -70,7 +69,7 @@ export default {
   methods: {
     fetchData() {
       this.listLoading = true
-      pageNews(this.cur,this.size).then(res => {
+      pageTalk(this.cur,this.size).then(res => {
         if(res.code == 200){
           this.list = res.data.records;
           this.total = res.data.total;
@@ -83,12 +82,12 @@ export default {
       this.fetchData();
     },
     openDelete(item) {
-      this.$confirm('此操作将删除该新闻, 是否继续?', '提示', {
+      this.$confirm('此操作将删除该帖, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        deleteNews(item.id).then((res)=>{
+        deleteTalk(item.id).then((res)=>{
           if(res.code == 200){
             if(res.data){
               this.fetchData();

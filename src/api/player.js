@@ -6,6 +6,19 @@ export function getTeamMembers(teamId) {
     method: 'get'
   })
 }
+export function getMatchTeamMembers(teamId) {
+  return request({
+    url: `player/match/${teamId}`,
+    method: 'get'
+  })
+}
+export function searchPlayer(keyword) {
+  return request({
+    url: `player/search`,
+    method: 'get',
+    params : {keyword}
+  })
+}
 export function pagePlayer(cur,size,params) {
   return request({
     url: `player/page/${cur}/${size}`,

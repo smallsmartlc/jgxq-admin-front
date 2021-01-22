@@ -191,6 +191,51 @@ export const constantRoutes = [
       },
     ]
   },
+  {
+    path: '/talk',
+    component: Layout,
+    meta: {
+      title: '闲聊管理',
+      icon: 'el-icon-help'
+    },
+    children: [
+      {
+        hidden : true,
+        path: '',
+        component: () => import('@/views/talk/index'),
+      },
+    ]
+  },
+  {
+    path: '/match',
+    component: Layout,
+    meta: {
+      title: '比赛管理',
+      icon: 'el-icon-help'
+    },
+    children: [
+      {
+        hidden : true,
+        path: '',
+        meta: { title: '比赛列表' },
+        component: () => import('@/views/match/index'),
+      },      
+      {
+        hidden : true,
+        path: 'add',
+        name: 'addMatch',
+        meta: { title: '添加' },
+        component: () => import('@/views/match/add'),
+      },
+      {
+        hidden : true,
+        path: ':id',
+        name: 'editMatch',
+        meta: { title: '编辑' },
+        component: () => import('@/views/match/edit'),
+      },
+    ]
+  },
 
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }

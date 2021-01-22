@@ -15,6 +15,10 @@ import router from './router'
 import '@/icons' // icon
 import '@/permission' // permission control
 
+import './assets/iconfont/iconfont.css'
+import './assets/iconfont/iconfont.js'
+
+
 import moment from "moment"
 
 
