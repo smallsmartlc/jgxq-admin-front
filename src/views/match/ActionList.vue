@@ -21,7 +21,9 @@
                 <el-select v-model="type" value-key="index" placeholder="请选择">
                     <el-option v-for="(item,index) in actionType" :key="index" :label="item.name" :value="index">
                         <div>
-                            <i :class="item.icon" :style="{'color':item.color}"/>{{item.name}}
+                            <!-- <i :class="item.icon" :style="{'color':item.color}"/> -->
+                            <svg-icon :icon-class="item.icon" />
+                            {{item.name}}
                         </div>
                     </el-option>
                 </el-select>
@@ -94,12 +96,12 @@ data() {
         {
           name : "换上",
           color:"#fc0",
-          icon : "el-icon-top",
+          icon : "iconfont icon-shang",
         },
         {
           name : "换下",
           color:"#ea3443",
-          icon : "el-icon-bottom",
+          icon : "iconfont icon-xia",
         },
         ],
         actionDialog : false,

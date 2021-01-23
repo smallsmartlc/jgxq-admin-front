@@ -1,0 +1,44 @@
+{
+  "id": "2344435",
+  "name": "jgxqadmin",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "9352010",
+      "name": "下",
+      "font_class": "xia",
+      "unicode": "e784",
+      "unicode_decimal": 59268
+    },
+    {
+      "icon_id": "9352013",
+      "name": "上",
+      "font_class": "shang",
+      "unicode": "e785",
+      "unicode_decimal": 59269
+    },
+    {
+      "icon_id": "4482839",
+      "name": "助攻",
+      "font_class": "zhugong",
+      "unicode": "e626",
+      "unicode_decimal": 58918
+    },
+    {
+      "icon_id": "10204026",
+      "name": "足球",
+      "font_class": "zuqiu",
+      "unicode": "e623",
+      "unicode_decimal": 58915
+    },
+    {
+      "icon_id": "13644934",
+      "name": "红牌",
+      "font_class": "red-card",
+      "unicode": "e6bb",
+      "unicode_decimal": 59067
+    }
+  ]
+}

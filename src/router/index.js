@@ -61,14 +61,14 @@ export const constantRoutes = [
     redirect: '/admin/account',
     meta: {
       title: '管理员',
-      icon: 'nested'
+      icon: 'password'
     },
     children: [
       {
         path: 'account',
         name: 'account',
         component: () => import('@/views/admin/index'),
-        meta: { title: '账户管理', icon: 'table' }
+        meta: { title: '账户管理', icon: 'example' }
       },
       {
         path: 'role',
