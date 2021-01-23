@@ -25,3 +25,28 @@ export function getNewsById(id) {
         url:`news/${id}`
     })
 }
+export function searchNews(keyword) {
+    return request({
+        method : 'get',
+        url:`news/search`,
+        params : {keyword}
+    })
+}
+export function listTopNews() {
+    return request({
+        method : 'get',
+        url:`news/top`,
+    })
+}
+export function addTopNews(id) {
+    return request({
+        method : 'post',
+        url:`news/top/${id}`,
+    })
+}
+export function deleteTopNews(id) {
+    return request({
+        method : 'delete',
+        url:`news/top/${id}`,
+    })
+}

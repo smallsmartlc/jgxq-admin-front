@@ -49,7 +49,8 @@ export default {
         addPlayer(){
             this.$refs["addForm"].validate((valid) => {
                 if (valid) {
-                    this.$emit("success",this.player);
+                    var temp = {id:null,name:this.player.name,matchPos:this.player.matchPos,number:this.player.number}
+                    this.$emit("success",temp);
                     this.close();
                 }
             })

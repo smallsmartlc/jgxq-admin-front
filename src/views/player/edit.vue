@@ -1,6 +1,6 @@
 <template>
   <div v-if="playerReq" style="padding:30px;">
-    <el-form loading="formLoading" ref="addForm" label-position="top" @submit.native.prevent :rules="rules" label-width="80px" :model="playerReq">
+    <el-form loading="formLoading" ref="editForm" label-position="top" @submit.native.prevent :rules="rules" label-width="80px" :model="playerReq">
       <el-form-item label="姓名" prop="name">
         <el-input v-model="playerReq.name"></el-input>
       </el-form-item>
@@ -159,12 +159,12 @@ export default {
       this.teamDialog = false;
     },
     updatePlayer(){
-      this.$refs["addForm"].validate((valid) => {
+      this.$refs["editForm"].validate((valid) => {
         if (valid) {
           this.formLoading = true;
           updatePlayer(this.$route.params.id,this.playerReq).then((res)=>{
-            if(res.code == 200){
-              this.$message.success("添加成功!");
+            if(res.code == 200 && res.data){
+              this.$message.success("修改成功!");
               this.routeBack();
               this.formLoading = false;
             }

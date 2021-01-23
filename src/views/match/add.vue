@@ -60,7 +60,23 @@
         </div>
       </div>
       <el-form-item label="事件" class="action_container">
-        <action-step :allPlayer = "allPlayer" :action="matchReq.action"/>
+        <action-step :allPlayer = "allPlayer" :action="matchReq.actions"/>
+      </el-form-item>
+      <el-form-item label="战报新闻">
+        <el-autocomplete
+          v-model="searchStr"
+          style="width:400px"
+          class="inline-input"
+          :fetch-suggestions="searchNews"
+          placeholder="搜索新闻"
+          :trigger-on-focus="false"
+          @select="selectNews"
+          suffix-icon="el-icon-search">
+          <template slot-scope="{ item }">
+            <news-box width="300px" imgSize="40px" :news="item"/>
+          </template>
+        </el-autocomplete>
+        <div style="background-color:#F2F6FC;width:50%"><news-box width="100%" imgSize="60px"  v-if="matchNews" :news="matchNews"/></div>
       </el-form-item>
       <el-form-item label="视频链接" prop="link">
         <el-input v-model="matchReq.link"></el-input>
@@ -73,15 +89,17 @@
   </div>
 </template>
 <script>
-import { getTeam,addTeam} from '@/api/team'
+import {addMatch} from '@/api/match'
+import {searchNews} from '@/api/news'
 import ImgUpdate from '@/components/common/ImgUpdate.vue'
 import ChampionBox from '@/components/common/ChampionBox.vue'
 import TeamUpdate from '@/components/common/TeamUpdate.vue'
 import PlayerTransfer from './PlayerTransfer.vue'
 import ActionStep from './ActionStep.vue'
+import NewsBox from './NewsBox.vue'
 
 export default {
-  components : {ImgUpdate, ChampionBox, TeamUpdate, PlayerTransfer, ActionStep},
+  components : {ImgUpdate, ChampionBox, TeamUpdate, PlayerTransfer, ActionStep, NewsBox},
   data() {
     return {
       matchReq: {
@@ -99,10 +117,11 @@ export default {
           homeSubstitute : [],
           visitingSubstitute : [],
         },
-        action : [],
+        actions : [],
       },
       homeTeam : null,
       visitingTeam : null,
+      matchNews : null,
       formLoading: true,
       homeTeamDialog : false,
       visitingTeamDialog : false,
@@ -112,6 +131,7 @@ export default {
         visitingTeam : [{required: true, message: '请选择客队', trigger: 'blur'}],
         startTime : [{required: true, message: '必须选择比赛时间!', trigger: 'blur'}],
       },
+      searchStr : "",
     }
   },
   mounted() {
@@ -131,9 +151,11 @@ export default {
       this.$refs["addForm"].validate((valid) => {
         if (valid) {
           this.formLoading = true;
-          addTeam(this.matchReq).then((res)=>{
+          addMatch(this.matchReq).then((res)=>{
+            if(res.code == 200){
               this.$message.success("添加成功!");
               this.routeBack();
+            }
             this.formLoading = false;
           }).catch(()=>{this.formLoading = false})
         }else{
@@ -144,8 +166,16 @@ export default {
     routeBack(){
       this.$router.go(-1);
     },
-    importPlayer(team){
-      
+    searchNews(queryString, cb) {
+      searchNews(queryString).then((res)=>{
+        if(res.code==200){
+          cb(res.data);
+        }
+      })
+    },
+    selectNews(item){
+      this.matchReq.matchNews = item.id;
+      this.matchNews = item;
     }
   },
   computed: {

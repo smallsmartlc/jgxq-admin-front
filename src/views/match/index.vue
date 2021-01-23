@@ -45,16 +45,22 @@
           <el-link type="primary" :href="scope.row.link" :underline="false">视频地址</el-link>
         </template>
       </el-table-column>
-      <el-table-column class-name="status-col" label="球队信息" align="center">
+      <el-table-column class-name="status-col" label="比赛信息" align="center">
         <template slot-scope="scope">
           <router-link :to="`/match/${scope.row.id}`"><el-link style="margin-right:10px" type="primary" :underline="false">编辑</el-link></router-link>
           <el-link type="primary" @click="openDelete(scope.row)" :underline="false">删除</el-link>
         </template>
       </el-table-column>
-      <el-table-column align="center" prop="created_at" label="比赛时间" width="200">
+      <el-table-column align="center" prop="startTime" label="比赛时间" width="200">
         <template slot-scope="scope">
           <i class="el-icon-time" />
           <span>{{ $moment(scope.row.startTime).format('YYYY-MM-DD HH:mm:ss') }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" prop="createTime" label="创建时间" width="200">
+        <template slot-scope="scope">
+          <i class="el-icon-time" />
+          <span>{{ $moment(scope.row.createTime).format('YYYY-MM-DD HH:mm:ss') }}</span>
         </template>
       </el-table-column>
     </el-table>

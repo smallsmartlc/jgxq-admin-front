@@ -52,7 +52,7 @@
         </div>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="modifyTeam">添加</el-button>
+        <el-button type="primary" @click="addTeam">添加</el-button>
         <el-button @click="routeBack">返回</el-button>
       </el-form-item>
     </el-form>
@@ -153,13 +153,15 @@ export default {
     removeChampionInfo(index){
       this.teamReq.infos.champions.splice(index, 1)
     },
-    modifyTeam(){
+    addTeam(){
       this.$refs["addForm"].validate((valid) => {
         if (valid) {
           this.formLoading = true;
           addTeam(this.teamReq).then((res)=>{
+            if(res.code == 200){
               this.$message.success("添加成功!");
               this.routeBack();
+            }
             this.formLoading = false;
           }).catch(()=>{this.formLoading = false})
         }else{

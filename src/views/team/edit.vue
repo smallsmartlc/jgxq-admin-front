@@ -144,7 +144,7 @@ export default {
         if (valid) {
           this.formLoading = true;
           updateTeam(this.$route.params.id,this.teamReq).then((res)=>{
-            if(res.data){
+            if(res.code==200 && res.data){
               this.$message.success("修改成功!");
               this.routeBack();
             }else{

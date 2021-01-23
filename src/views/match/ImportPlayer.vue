@@ -1,7 +1,7 @@
 <template>
   <el-dialog title="导入球员" :visible.sync="importDialog" width="30%" :before-close="close">
-  <el-checkbox :indeterminate="isIndeterminate" v-model="data" @change="handleCheckAllChange">全选</el-checkbox>
-  <el-checkbox-group v-model="data">
+  <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
+  <el-checkbox-group v-model="data" @change="handleCheckedPlayersChange">
     <el-checkbox :label="item" v-for="(item,index) in players" :key="index" border>
         <div style="display:flex;flex-wrap:wrap;align-items:center">
             <div class="circle">{{item.number}}</div>
@@ -29,6 +29,7 @@ export default {
             },
             positionMap : ["门将","后卫","中场","前腰","前锋"],
             isIndeterminate : false,
+            checkAll : false,
         }
     },
     props : {
@@ -54,6 +55,11 @@ export default {
         handleCheckAllChange(val){
             this.data = val ? this.players : [];
             this.isIndeterminate = false;
+        },
+        handleCheckedPlayersChange(val){
+            let checkedCount = val.length;
+            this.checkAll = checkedCount === this.players.length;
+            this.isIndeterminate = checkedCount > 0 && checkedCount < this.players.length;
         }
     },
 }
