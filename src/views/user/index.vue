@@ -109,7 +109,6 @@ export default {
         type: 'warning'
       }).then(() => {
         var req = {author : !user.author}
-        console.log(user);
         updateUser(user.userkey,req).then((res)=>{
           if(res.code == 200){
             if(res.data){
