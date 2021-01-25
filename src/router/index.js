@@ -61,20 +61,20 @@ export const constantRoutes = [
     redirect: '/admin/account',
     meta: {
       title: '管理员',
-      icon: 'password'
+      icon: 'admin'
     },
     children: [
       {
         path: 'account',
         name: 'account',
         component: () => import('@/views/admin/index'),
-        meta: { title: '账户管理', icon: 'example' }
+        meta: { title: '账户管理', icon: 'role' }
       },
       {
         path: 'role',
         name: 'role',
         component: () => import('@/views/admin/role'),
-        meta: { title: '角色管理', icon: 'table' }
+        meta: { title: '角色管理', icon: 'tree' }
       },
     ]
   },
@@ -87,7 +87,7 @@ export const constantRoutes = [
         path: '/user',
         name: 'Form',
         component: () => import('@/views/user/index'),
-        meta: { title: '用户管理', icon: 'table' }
+        meta: { title: '用户管理', icon: 'user' }
       }
     ]
   },
@@ -97,7 +97,7 @@ export const constantRoutes = [
     component: Layout,
     meta: {
       title: '球队管理',
-      icon: 'nested'
+      icon: 'team'
     },
     children: [
       {
@@ -135,7 +135,7 @@ export const constantRoutes = [
     component: Layout,
     meta: {
       title: '球员管理',
-      icon: 'nested'
+      icon: 'player'
     },
     children: [
       {
@@ -169,11 +169,41 @@ export const constantRoutes = [
     ]
   },
   {
+    path: '/match',
+    component: Layout,
+    meta: {
+      title: '比赛管理',
+      icon: 'match'
+    },
+    children: [
+      {
+        hidden : true,
+        path: '',
+        meta: { title: '比赛列表' },
+        component: () => import('@/views/match/index'),
+      },      
+      {
+        hidden : true,
+        path: 'add',
+        name: 'addMatch',
+        meta: { title: '添加' },
+        component: () => import('@/views/match/add'),
+      },
+      {
+        hidden : true,
+        path: ':id',
+        name: 'editMatch',
+        meta: { title: '编辑' },
+        component: () => import('@/views/match/edit'),
+      },
+    ]
+  },
+  {
     path: '/news',
     component: Layout,
     meta: {
       title: '新闻管理',
-      icon: 'el-icon-help'
+      icon: 'el-icon-document'
     },
     children: [
       {
@@ -196,43 +226,13 @@ export const constantRoutes = [
     component: Layout,
     meta: {
       title: '闲聊管理',
-      icon: 'el-icon-help'
+      icon: 'talk'
     },
     children: [
       {
         hidden : true,
         path: '',
         component: () => import('@/views/talk/index'),
-      },
-    ]
-  },
-  {
-    path: '/match',
-    component: Layout,
-    meta: {
-      title: '比赛管理',
-      icon: 'el-icon-help'
-    },
-    children: [
-      {
-        hidden : true,
-        path: '',
-        meta: { title: '比赛列表' },
-        component: () => import('@/views/match/index'),
-      },      
-      {
-        hidden : true,
-        path: 'add',
-        name: 'addMatch',
-        meta: { title: '添加' },
-        component: () => import('@/views/match/add'),
-      },
-      {
-        hidden : true,
-        path: ':id',
-        name: 'editMatch',
-        meta: { title: '编辑' },
-        component: () => import('@/views/match/edit'),
       },
     ]
   },

@@ -56,8 +56,8 @@ export default {
   data() {
     return {
       loginForm: {
-        adminName: 'admin',
-        password: 'abc123'
+        adminName: '',
+        password: ''
       },
       loginRules: {
         adminName: [{ required: true, trigger: 'blur', validator: validateAdmin }],

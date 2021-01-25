@@ -1,12 +1,11 @@
 <template>
-    <el-backtop target='.app-component .el-scrollbar__wrap' @click="ignite" style="height:60px;width:60px;" >
+    <el-backtop @click="ignite" style="height:60px;width:60px;" >
         <div>
             <el-image class="fire" :class="isIgnite?'ignite':''"
             :src="require('../../assets/rocket-fire.png')" fit="cover"></el-image>
             <el-image style="width: 60px; height: 60px;position:absolute;left:0;top:0" :src="require('../../assets/rocket.png')" fit="cover"></el-image>
         </div>
     </el-backtop>
-  
 </template>
 
 <script>

@@ -21,8 +21,7 @@
                 <el-select v-model="type" value-key="index" placeholder="请选择">
                     <el-option v-for="(item,index) in actionType" :key="index" :label="item.name" :value="index">
                         <div>
-                            <!-- <i :class="item.icon" :style="{'color':item.color}"/> -->
-                            <svg-icon :icon-class="item.icon" />
+                            <i :class="item.icon" :style="{'color':item.color}"/>
                             {{item.name}}
                         </div>
                     </el-option>
