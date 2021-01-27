@@ -95,7 +95,7 @@ export default {
             if(res.code == 200){
               const { data } = res
               // commitf('SET_TOKEN', data.token)
-              setToken(data.token)
+              // setToken(data.token)
               this.$router.push({ path: this.redirect || '/' })
             }
             
