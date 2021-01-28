@@ -23,6 +23,11 @@
           <el-image style="width: 80px; height: 80px" :src="$utils.url2img(scope.row.headImage)" fit="contain"></el-image>
         </template>
       </el-table-column>
+      <el-table-column label="号码">
+        <template slot-scope="scope">
+          {{ scope.row.number }}
+        </template>
+      </el-table-column>
       <el-table-column label="国籍">
         <template slot-scope="scope">
           {{ scope.row.nation }}
