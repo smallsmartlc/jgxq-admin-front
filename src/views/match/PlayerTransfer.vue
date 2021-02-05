@@ -12,7 +12,7 @@
                 size="small"
                 @select="selectHomePlayer">
                 <template slot-scope="{ item }">
-                <div><img :src="$utils.url2img(item.headImage)" style="height:16px;vertical-align: middle;"><span style="font-size:12px">{{item.number}}号,{{item.name}}-{{positionMap[item.matchPos]}}</span></div>
+                <div><img :src="$utils.url2img(item.headImage)" style="height:16px;vertical-align: middle;"><span style="font-size:12px">{{item.number}}号&nbsp;{{item.name}}-{{positionMap[item.matchPos]}}</span></div>
                 <!-- <span class="addr">{{ item.address }}</span> -->
                 </template>
             </el-autocomplete>
@@ -98,7 +98,12 @@ data() {
 },
 methods: {
     selectHomePlayer(item){
-      this.substitute.push(item);
+      var temp = {};
+      temp.id = item.id;
+      temp.name = item.name;
+      temp.number = item.number;
+      temp.matchPos = item.matchPos;
+      this.substitute.push(temp);
     },
     searchPlayer(queryString, cb){
       searchPlayer(queryString).then((res)=>{
