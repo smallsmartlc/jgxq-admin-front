@@ -1,9 +1,10 @@
 import request from '@/utils/request'
 
-export function pageNews(cur,size) {
+export function pageNews(cur,size,keyword) {
     return request({
         url: `news/page/${cur}/${size}`,
-        method: 'get'
+        method: 'get',
+        params : {keyword}
     })
 }
 export function deleteNews(id) {

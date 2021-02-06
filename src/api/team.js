@@ -1,10 +1,10 @@
 import request from '@/utils/request'
 
-export function pageTeams(cur,size,data) {
+export function pageTeams(cur,size,params) {
   return request({
     url: `team/page/${cur}/${size}`,
     method: 'get',
-    data
+    params
   })
 }
 export function getTeam(id) {

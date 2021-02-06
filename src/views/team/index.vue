@@ -1,6 +1,15 @@
 <template>
   <div class="app-container">
-    <div style="margin-bottom:10px"><router-link to="/team/add"><el-button type="primary" icon="el-icon-plus">添加球队</el-button></router-link></div>
+    <div style="margin-bottom:10px">
+      <router-link to="/team/add"><el-button type="primary" icon="el-icon-plus">添加球队</el-button></router-link>
+      <el-input
+        style="width:200px;margin-left:5px"
+        placeholder="搜索球队"
+        clearable
+        v-model="keyword">
+        <el-button slot="append" @click="fetchData" icon="el-icon-search"></el-button>
+      </el-input>
+    </div>
     <el-table
       v-loading="listLoading"
       :data="list"
@@ -37,7 +46,7 @@
       <el-table-column align="center" prop="created_at" label="创建时间" width="200">
         <template slot-scope="scope">
           <i class="el-icon-time" />
-          <span>{{ $moment(scope.row.createAt).format('YYYY-MM-DD HH:mm:ss') }}</span>
+          <span v-if="scope.row.createAt">{{ $moment(scope.row.createAt).format('YYYY-MM-DD HH:mm:ss') }}</span>
         </template>
       </el-table-column>
     </el-table>
@@ -68,6 +77,7 @@ export default {
       cur : 1,
       size : 10,
       total : 0,
+      keyword : null,
     }
   },
   created() {
@@ -76,7 +86,7 @@ export default {
   methods: {
     fetchData() {
       this.listLoading = true
-      pageTeams(this.cur,this.size).then(res => {
+      pageTeams(this.cur,this.size,{keyword : this.keyword}).then(res => {
         if(res.code == 200){
           this.list = res.data.data;
           this.total = res.data.total;

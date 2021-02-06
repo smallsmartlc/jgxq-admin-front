@@ -1,6 +1,15 @@
 <template>
   <div class="app-container">
-    <el-button @click="openTopDialog" type="primary" plain>置顶列表</el-button>
+    <div style="display:flex;margin-bottom:10px">
+      <el-button @click="openTopDialog" type="primary" plain>置顶列表</el-button>
+      <el-input
+        style="width:200px;margin-left:5px"
+        placeholder="搜索新闻"
+        clearable
+        v-model="keyword">
+        <el-button slot="append" @click="fetchData" icon="el-icon-search"></el-button>
+      </el-input>
+    </div>
     <el-table
       v-loading="listLoading"
       :data="list"
@@ -87,6 +96,7 @@ export default {
       total : 0,
       topNews : null,
       topDialog :false,
+      keyword : null,
     }
   },
   created() {
@@ -95,7 +105,7 @@ export default {
   methods: {
     fetchData() {
       this.listLoading = true
-      pageNews(this.cur,this.size).then(res => {
+      pageNews(this.cur,this.size,this.keyword).then(res => {
         if(res.code == 200){
           this.list = res.data.records;
           this.total = res.data.total;
