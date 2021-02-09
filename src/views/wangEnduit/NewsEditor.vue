@@ -9,6 +9,7 @@
 
 <script>
 import { BaseUrl } from '@/constants/index'
+import {emojis} from './emoji.js'
   import E from 'wangeditor'
   export default {
     name: 'editoritem',
@@ -90,6 +91,7 @@ import { BaseUrl } from '@/constants/index'
           'redo', // 重复
         ]
 
+        config.emotions = emojis;
         config.uploadImgHooks = {
           fail: (xhr, editor, result) => {
             // 插入图片失败回调
