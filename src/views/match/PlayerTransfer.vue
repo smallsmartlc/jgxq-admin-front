@@ -99,7 +99,7 @@ data() {
 methods: {
     selectHomePlayer(item){
       var temp = {};
-      temp.id = item.id;
+      temp.playerId = item.id;
       temp.name = item.name;
       temp.number = item.number;
       temp.matchPos = item.matchPos;
@@ -141,7 +141,12 @@ methods: {
     },
     importPlayer(players){
         players.forEach(p=>{
-            this.substitute.push(p);
+            var temp = {};
+            temp.playerId = p.id;
+            temp.name = p.name;
+            temp.number = p.number;
+            temp.matchPos = p.matchPos;
+            this.substitute.push(temp);
         })
         this.closeImport();
     },
