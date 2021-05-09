@@ -111,7 +111,7 @@ data() {
 },
 methods: {
     addAction(){
-        this.list.push({name:this.player.name,playerId:this.player.id,home:this.home,type:this.type});
+        this.list.push({name:this.player.name,playerId:this.player.playerId,home:this.home,type:this.type});
         this.actionDialog = false;
     },
     removerAction(index){

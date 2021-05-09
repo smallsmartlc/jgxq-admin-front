@@ -52,7 +52,8 @@ computed:{
     select(){
         var temp = [];
         this.allPlayer.forEach((a,index)=>{
-            temp.push({id:a.id,name:a.name,number:a.number,index});
+            console.log(a.playerId);
+            temp.push({id:a.id,name:a.name,number:a.number,playerId:a.playerId,index});
         })
         return temp;
     }
