@@ -1,6 +1,15 @@
 <template>
   <div class="app-container">
-    <div style="margin-bottom:10px"><router-link to="/player/add"><el-button type="primary" icon="el-icon-plus">添加球员</el-button></router-link></div>
+    <div style="margin-bottom:10px">
+      <router-link to="/player/add"><el-button type="primary" icon="el-icon-plus">添加球员</el-button></router-link>
+      <el-input
+        style="width:200px;margin-left:20px"
+        placeholder="搜索球员"
+        clearable
+        v-model="keyword">
+        <el-button slot="append" @click="fetchData" icon="el-icon-search"></el-button>
+      </el-input>
+    </div>
     <el-table
       v-loading="listLoading"
       :data="list"
@@ -92,6 +101,7 @@ export default {
       cur : 1,
       size : 10,
       total : 0,
+      keyword : "",
     }
   },
   created() {
@@ -100,7 +110,7 @@ export default {
   methods: {
     fetchData() {
       this.listLoading = true
-      pagePlayer(this.cur,this.size).then(res => {
+      pagePlayer(this.cur,this.size,{keyword:this.keyword}).then(res => {
         if(res.code == 200){
           this.list = res.data.records;
           this.total = res.data.total;
