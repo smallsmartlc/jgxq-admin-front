@@ -59,3 +59,10 @@ export function updatePlayer(id,data) {
     data
   })
 }
+export function batchRetire(data) {
+  return request({
+    method : 'put',
+    url:`player/batchRetire`,
+    data
+  })
+}
