@@ -1,11 +1,15 @@
 <template>
   <div class="app-container">
-    <div style="margin-bottom:10px"><router-link to="/player"><el-button type="primary" icon="el-icon-plus">添加队员</el-button></router-link></div>
-    <div v-for="item in list" :key="item.name">
-      <h3>{{item.name}}</h3>
+    <div style="display:flex;justify-content:space-between">
+      <div class="left" style="margin-bottom:10px"><router-link to="/player"><el-button type="primary" icon="el-icon-plus">添加队员</el-button></router-link></div>
+      <div class="right"><el-button type="info" @click="editDialog=true">合同到期</el-button></div>
+    </div>
+    
+    <div v-for="(item,index) in playerGroup" :key="item.name">
+      <h3>{{position[index]}}</h3>
       <div>
         <el-table
-        :data="item.playerList"
+        :data="item"
         border
         :show-header="false"
         style="width: 100%">
@@ -49,6 +53,22 @@
       </div>
       
     </div>
+    <el-dialog title="合同到期球员" :visible.sync="editDialog" width="30%">
+      <!-- <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
+      <el-checkbox-group v-model="list" @change="handleCheckedPlayersChange">
+        <el-checkbox :label="item" v-for="(item,index) in list" :key="index" border>
+            <div style="display:flex;flex-wrap:wrap;align-items:center">
+                <div class="circle">{{item.number}}</div>
+                <div>{{item.name}}</div>
+                <div style="font-size:12px">{{positionMap[item.matchPos]}}</div>
+            </div>
+        </el-checkbox>
+      </el-checkbox-group>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="close()">取 消</el-button>
+        <el-button type="primary" @click="importPlayer">确 定</el-button>
+      </div> -->
+    </el-dialog>
   </div>
 </template>
 
@@ -62,6 +82,9 @@ export default {
       listLoading: true,
       position : ["门将","后卫","中场","前锋"],
       curIndex : 0,
+      editDialog : false,
+      isIndeterminate : false,
+      data: [],
     }
   },
   created() {
@@ -77,6 +100,25 @@ export default {
         }
       }).catch(()=>{this.listLoading = false})
     },
+    handleCheckAllChange(val){
+      this.data = val ? this.list : [];
+      this.isIndeterminate = false;
+    },
+    handleCheckedPlayersChange(val){
+      let checkedCount = val.length;
+      this.checkAll = checkedCount === this.players.length;
+      this.isIndeterminate = checkedCount > 0 && checkedCount < this.list.length;
+    }
+  },
+  computed:{
+    playerGroup(){
+      let res = [[],[],[],[]];
+      var list = this.list?this.list:[];
+      for(var i=0;i<list.length;i++){
+        res[list[i].position].push(list[i]);
+      }
+      return res;
+    }
   }
 }
 </script>
