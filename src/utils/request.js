@@ -121,7 +121,6 @@ service.interceptors.response.use(
             Message({
                 message: error.response.data.message || '服务器异常，请联系管理员',
                 type: 'error',
-                duration: messageTime
             })  
         }
         if (error.response.status === 404) {

@@ -1,8 +1,33 @@
 <template>
   <div class="app-container">
     <div style="display:flex;justify-content:space-between">
-      <div class="left" style="margin-bottom:10px"><router-link to="/player"><el-button type="primary" icon="el-icon-plus">添加队员</el-button></router-link></div>
-      <div class="right"><el-button type="info" @click="editDialog=true">合同到期</el-button></div>
+      <div class="left" style="margin-bottom:10px;display:flex">
+        <router-link to="/player"><el-button type="primary" size="small" icon="el-icon-plus">添加队员</el-button></router-link>
+        <el-upload
+          ref="fileUpload"
+          class="upload-demo"
+          :action="uploadUrl"
+          :multiple="false"
+          with-credentials
+          accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel"
+          :on-success="handleUploadSuccess"
+          :on-error="handleUploadError"
+          :limit="1"
+          style="margin: 0 16px"
+          >
+          <el-button @click="clearFiles" size="small" type="success">从Excel导入</el-button>
+          <span style="margin-left:8px" slot="tip" class="el-upload__tip">只能上传xls/xlsx文件</span>
+        </el-upload>
+        <el-button type="primary" @click="spiderDialog=true" size="small" icon="el-icon-plus">从ing足球导入</el-button>
+        <el-dialog title="输入比赛id" :visible.sync="spiderDialog" width="30%">
+          <import-ing></import-ing>
+        </el-dialog>
+      </div>
+      <div class="right" style="display:flex">
+        <div>
+          <el-button type="info" @click="editDialog=true">合同到期</el-button>
+        </div>
+      </div>
     </div>
     <div v-for="(item,index) in playerGroup" :key="item.name">
       <template v-if="item.length>0">
@@ -77,8 +102,10 @@
 
 <script>
 import { getTeamMembers,batchRetire } from '@/api/player'
-
+import { BaseUrl } from '@/constants/index'
+import ImportIng from './ImportIng.vue'
 export default {
+  components: { ImportIng,  },
   data() {
     return {
       list : null,
@@ -90,6 +117,7 @@ export default {
       data: [],
       checkAll : false,
       dialogLoading : false,
+      spiderDialog : false,
     }
   },
   created() {
@@ -131,7 +159,33 @@ export default {
       let checkedCount = val.length;
       this.checkAll = checkedCount === this.list.length;
       this.isIndeterminate = checkedCount > 0 && checkedCount < this.list.length;
-    }
+    },
+    handleUploadSuccess(res){
+      if(res.code == "200"){
+        this.$message.success(`已添加${res.data}名球员,姓名相同球员需要手动添加`);
+        if(res.data > 0){
+          this.fetchData();
+        }
+      }
+    },
+    handleUploadError(error){
+      if(error.status){
+        if(error.status === 401){
+          this.$message.error("请先登陆再操作");
+        }else if(error.status === 403){
+          let res = JSON.parse(error.message);
+          this.$message.warning(res.message||'没有操作权限！');
+        }else if(error.status === 500 || error.status == 400){
+          let res = JSON.parse(error.message);
+          this.$message.error(res.message || '服务器异常，请联系管理员')
+        }
+      }else{
+        this.$message.error(error.message|| '服务器异常，请联系管理员')
+      }
+    },
+    clearFiles(){
+      this.$refs.fileUpload.clearFiles()
+    },
   },
   computed:{
     playerGroup(){
@@ -141,6 +195,9 @@ export default {
         res[list[i].position].push(list[i]);
       }
       return res;
+    },
+    uploadUrl(){
+      return BaseUrl + `/player/upload/${this.$route.params.id}`
     }
   }
 }

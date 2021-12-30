@@ -66,3 +66,17 @@ export function batchRetire(data) {
     data
   })
 }
+export function importPlayerFromIng(matchId) {
+  return request({
+    method : 'get',
+    url:`spider/ing/player`,
+    params: {matchId}
+  })
+}
+export function addBatchPlayer(data) {
+  return request({
+    method : 'post',
+    url:`player/batch/add`,
+    data
+  })
+}
